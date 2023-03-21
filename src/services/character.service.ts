@@ -19,3 +19,10 @@ export const getCharacterById = async (id: string): Promise<ICharacter> => {
   const response = await axios.get(GET_CHARACTERS + "/" + id);
   return response.data;
 };
+
+export const getCharacterByIdFromArray = (
+  id: string,
+  characters: ICharacter[]
+): ICharacter => {
+  return characters.filter((char) => char.id === +id)[0];
+};

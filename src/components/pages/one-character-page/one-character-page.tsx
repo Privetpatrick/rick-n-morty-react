@@ -1,17 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import s from "./one-character-page.module.scss";
-import { getCharacterById } from "../../services/character.service";
-import { ICharacter } from "../../interfaces/character.interface";
+import {
+  getCharacterById,
+  getCharacterByIdFromArray,
+} from "../../../services/character.service";
+import { ICharacter } from "../../../interfaces/character.interface";
+import { CharactersContext } from "../../../contexts/characters.context";
 
 const OneCharacterPage: React.FC = () => {
   const params = useParams<{ id: string }>();
   const [id, setId] = useState<string>(params.id!);
+  const { characters, setCharacters } = useContext(CharactersContext);
+
   const [character, setCharacter] = useState<ICharacter>();
   const navigate = useNavigate();
 
   useEffect(() => {
-    getCharacterById(id).then((data) => setCharacter(data));
+    if (characters.length === 0) {
+      getCharacterById(id).then((data) => setCharacter(data));
+    } else {
+      const character = getCharacterByIdFromArray(id, characters);
+      setCharacter(character);
+    }
   }, [id]);
 
   const back = () => {

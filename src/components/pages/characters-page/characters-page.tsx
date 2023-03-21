@@ -1,18 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import s from "./characters-page.module.scss";
 
 import CharacterCard from "./character-card";
-import { ICharacter } from "../../../interfaces/character.interface";
 import { getCharacters } from "../../../services/character.service";
 import {
   getLocalStorage,
   setLocalStorage,
 } from "../../../services/local-storage.service";
+import { CharactersContext } from "../../../contexts/characters.context";
 
 const CharactersPage: React.FC = () => {
-  const [characters, setCharacters] = useState<ICharacter[] | undefined>(
-    undefined
-  );
+  const { characters, setCharacters } = useContext(CharactersContext);
 
   const [form, setForm] = useState<string>("");
   const [inputValue, setInputValue] = useState<string>("");
@@ -27,7 +25,7 @@ const CharactersPage: React.FC = () => {
     getCharacters(form)
       .then((data) => setCharacters(data))
       .catch(() => {
-        setCharacters(undefined);
+        setCharacters([]);
       });
   }, [form]);
 
@@ -61,7 +59,7 @@ const CharactersPage: React.FC = () => {
             ></CharacterCard>
           ))}
 
-        {!characters && (
+        {characters.length === 0 && (
           <div className={s.noResults}>Sorry no characters with such name.</div>
         )}
       </div>
